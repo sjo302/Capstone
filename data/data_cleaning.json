@@ -144,7 +144,12 @@
         "READMRELICD104",
         "READMRELICD105",
         "NCNSCOMA",
-        "NNEURODEF"
+        "NNEURODEF",
+        "PGY",
+        "PACKS",
+        "YRDEATH",
+        "NOTHGRAFL",
+        "PROPER30"
     ],
     "ensure_before_readmission": {
         "SUPINFEC": {
