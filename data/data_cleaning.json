@@ -1,0 +1,245 @@
+{
+    "cols_to_drop": [
+        "DPRNA",
+        "DPRBUN",
+        "DPRCREAT",
+        "DPRALBUM",
+        "DPRBILI",
+        "DPRSGOT",
+        "DPRALKPH",
+        "DPRWBC",
+        "DPRHCT",
+        "DPRPLATE",
+        "DPRPTT",
+        "DPRPT",
+        "DPRINR",
+        "OTHERPROC1",
+        "OTHERCPT1",
+        "OTHERWRVU1",
+        "OTHERPROC2",
+        "OTHERCPT2",
+        "OTHERWRVU2",
+        "OTHERPROC3",
+        "OTHERCPT3",
+        "OTHERWRVU3",
+        "OTHERPROC4",
+        "OTHERCPT4",
+        "OTHERWRVU4",
+        "OTHERPROC5",
+        "OTHERCPT5",
+        "OTHERWRVU5",
+        "OTHERPROC6",
+        "OTHERCPT6",
+        "OTHERWRVU6",
+        "OTHERPROC7",
+        "OTHERCPT7",
+        "OTHERWRVU7",
+        "OTHERPROC8",
+        "OTHERCPT8",
+        "OTHERWRVU8",
+        "OTHERPROC9",
+        "OTHERCPT9",
+        "OTHERWRVU9",
+        "OTHERPROC10",
+        "OTHERCPT10",
+        "OTHERWRVU10",
+        "CONCURR1",
+        "CONCPT1",
+        "CONWRVU1",
+        "CONCURR2",
+        "CONCPT2",
+        "CONWRVU2",
+        "CONCURR3",
+        "CONCPT3",
+        "CONWRVU3",
+        "CONCURR4",
+        "CONCPT4",
+        "CONWRVU4",
+        "CONCURR5",
+        "CONCPT5",
+        "CONWRVU5",
+        "CONCURR6",
+        "CONCPT6",
+        "CONWRVU6",
+        "CONCURR7",
+        "CONCPT7",
+        "CONWRVU7",
+        "CONCURR8",
+        "CONCPT8",
+        "CONWRVU8",
+        "CONCURR9",
+        "CONCPT9",
+        "CONWRVU9",
+        "CONCURR10",
+        "CONCPT10",
+        "CONWRVU10",
+        "ATTEND", 
+        "ETOH",
+        "CPNEUMON",
+        "DNR",
+        "ESOVAR",
+        "HXMI",
+        "PRVPCI",
+        "PRVPCS",
+        "HXANGINA",
+        "HXPVD",
+        "RESTPAIN",
+        "IMPSENS",
+        "COMA",
+        "HEMI",
+        "HXTIA",
+        "CVA", 
+        "CVANO", 
+        "TUMORCNS", 
+        "QUAD", 
+        "CHEMO", 
+        "RADIO", 
+        "CNSCOMA", 
+        "NEURODEF", 
+        "OTHGRAFL", 
+        "PARA", 
+        "PREGNANCY",
+        "DOPERTOD",
+        "REOPERATION3",
+        "READMISSION1",
+        "UNPLANNEDREADMISSION1",
+        "READMRELATED1",
+        "READMSUSPREASON1",
+        "READMRELICD91",
+        "READMISSION2",
+        "READMPODAYS2",
+        "UNPLANNEDREADMISSION2",
+        "READMRELATED2",
+        "READMSUSPREASON2",
+        "READMRELICD92",
+        "READMISSION3",
+        "READMPODAYS3",
+        "UNPLANNEDREADMISSION3",
+        "READMRELATED3",
+        "READMSUSPREASON3",
+        "READMRELICD93",
+        "READMISSION4",
+        "READMPODAYS4",
+        "UNPLANNEDREADMISSION4",
+        "READMRELATED4",
+        "READMSUSPREASON4",
+        "READMRELICD94",
+        "READMISSION5",
+        "READMPODAYS5",
+        "UNPLANNEDREADMISSION5",
+        "READMRELATED5",
+        "READMSUSPREASON5",
+        "READMUNRELSUSP1",
+        "READMUNRELICD91",
+        "READMUNRELSUSP2",
+        "READMUNRELICD92",
+        "READMUNRELSUSP3",
+        "READMUNRELICD93",
+        "READMRELICD101",
+        "READMUNRELICD101",
+        "READMRELICD102",
+        "READMUNRELICD102",
+        "READMRELICD103",
+        "READMUNRELICD103",
+        "READMRELICD104",
+        "READMRELICD105",
+        "NCNSCOMA",
+        "NNEURODEF"
+    ],
+    "ensure_before_readmission": {
+        "SUPINFEC": {
+            "day_col": "DSUPINFEC",
+            "cols_to_drop": ["NSUPINFEC"]
+        },
+        "WNDINFD": {
+            "day_col": "DWNDINFD",
+            "cols_to_drop": ["NWNDINFD"]
+        },
+        "ORGSPCSSI": {
+            "day_col": "DORGSPCSSI",
+            "cols_to_drop": ["NORGSPCSSI"]
+        },
+        "DEHIS": {
+            "day_col": "DDEHIS",
+            "cols_to_drop": ["NDEHIS"]
+        },
+        "OUPNEUMO": {
+            "day_col": "DOUPNEUMO",
+            "cols_to_drop": ["NOUPNEUMO"]
+        },
+        "REINTUB": {
+            "day_col": "DREINTUB",
+            "cols_to_drop": ["NREINTUB"]
+        },
+        "PULEMBOL": {
+            "day_col": "DPULEMBOL",
+            "cols_to_drop": ["NPULEMBOL"]
+        },
+        "FAILWEAN": {
+            "day_col": "DFAILWEAN",
+            "cols_to_drop": ["NFAILWEAN"]
+        },
+        "RENAINSF": {
+            "day_col": "DRENAINSF",
+            "cols_to_drop": ["NRENAINSF"]
+        },
+        "OPRENAFL": {
+            "day_col": "DOPRENAFL",
+            "cols_to_drop": ["NOPRENAFL"]
+        },
+        "URNINFEC": {
+            "day_col": "DURNINFEC",
+            "cols_to_drop": ["NURNINFEC"]
+        },
+        "CNSCVA": {
+            "day_col": "DCNSCVA",
+            "cols_to_drop": ["NCNSCVA"]
+        },
+        "CDARREST": {
+            "day_col": "DCDARREST",
+            "cols_to_drop": ["NCDARREST"]
+        },
+        "CDMI": {
+            "day_col": "DCDMI",
+            "cols_to_drop": ["NCDMI"]
+        },
+        "OTHBLEED": {
+            "day_col": "DOTHBLEED",
+            "cols_to_drop": ["NOTHBLEED"]
+        },
+        "OTHDVT": {
+            "day_col": "DOTHDVT",
+            "cols_to_drop": ["NOTHDVT"]
+        },
+        "OTHSYSEP": {
+            "day_col": "DOTHSYSEP",
+            "cols_to_drop": ["NOTHSYSEP"]
+        },
+        "OTHSESHOCK": {
+            "day_col": "DOTHSESHOCK",
+            "cols_to_drop": ["NOTHSESHOCK"]
+        },
+        "OTHCDIFF": {
+            "day_col": "DOTHCDIFF",
+            "cols_to_drop": ["NOTHCDIFF"]
+        },
+        "REOPERATION1": {
+            "day_col": "RETOR1PODAYS",
+            "cols_to_drop": [
+                "REOPORCPT1",
+                "RETOR1RELATED",
+                "REOPOR1ICD91",
+                "REOPOR1ICD101"
+            ]
+        },
+        "REOPERATION2": {
+            "day_col": "RETOR2PODAYS",
+            "cols_to_drop": [
+                "REOPOR2CPT1",
+                "RETOR2RELATED",
+                "REOPOR2ICD91",
+                "REOPOR2ICD101"
+            ]
+        }
+    }
+}
