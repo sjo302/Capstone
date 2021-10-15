@@ -1,0 +1,12 @@
+Unplanned reoperation; related?
+Include an interaction term here.
+
+We need to try to unpack the monet schema info
+
+Note Zoran of typo with "1" in data dictionary?
+
+Can we keep the "number" of complications?
+The number might include complications for subsequent readmissions
+
+
+How to one hot encode with missing data

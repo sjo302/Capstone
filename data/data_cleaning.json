@@ -149,7 +149,26 @@
         "PACKS",
         "YRDEATH",
         "NOTHGRAFL",
-        "PROPER30"
+        "PROPER30",
+        "COL_ICD10_INDICATION",
+        "COL_ICD10_EMERGENT",
+        "ANESTHES_OTHER",
+        "COL_ICD9_INDICATION",
+        "COL_ICD9_EMERGENT",
+        "COL_MARGINS_UNK",
+        "COL_ILEUS_UNK",
+        "COL_STERIOD_UNK",
+        "COL_STEROID",
+        "COL_INDICATION",
+        "COL_EMERGENT",
+        "PODIAGTX",
+        "PODIAG",
+        "PODIAGTX10",
+        "PODIAG10",
+        "PODIAG_OTHER",
+        "PODIAG_OTHER10",
+        "COL_STERIOD",
+        "COL_STEROID_UNK"
     ],
     "ensure_before_readmission": {
         "SUPINFEC": {
@@ -246,5 +265,62 @@
                 "REOPOR2ICD101"
             ]
         }
+    },
+    "principle_operation": {
+        "COLCT TOT ABDL W/O PRCTECT W/CONTINENT ILEOST": 1,
+        "COLCT TOT ABDL W/O PRCTECT W/ILEOST/ILEOPXTS": 2,
+        "LAPS COLECTOMY TOT W/O PRCTECT W/ILEOST/ILEOPXTS": 2,
+        "COLECTOMY PARTIAL W/ANASTOMOSIS": 3,
+        "LAPAROSCOPY COLECTOMY PARTIAL W/ANASTOMOSIS": 3,
+        "COLECTOMY PRTL ABDOMINAL & TRANSANAL APPROACH": 4,
+        "COLECTOMY PRTL ABDOMINAL & TRANSANAL APPR": 4,
+        "'COLECTOMY PRTL W/COLOPROCTOSTOMY": 5,
+        "LAPS COLECTOMY PRTL W/COLOPXTSTMY LW ANAST": 5,
+        "COLECTOMY PRTL W/COLOPROCTOSTOMY & COLOSTOMY": 6,
+        "LAPS COLECTMY PRTL W/COLOPXTSTMY LW ANAST W/CLST": 6,
+        "COLECTOMY PRTL W/COLOST/ILEOST & MUCOFISTULA": 7,
+        "COLECTOMY PRTL W/END COLOSTOMY & CLSR DSTL SGMT": 8,
+        "COLECTOMY PRTL W/END COLOSTOMY&CLSR DSTL SGMT": 8,
+        "LAPS COLECTOMY PRTL W/END CLST & CLSR DSTL SGM": 8,
+        "LAPS COLECTOMY PRTL W/END CLST&CLSR DSTL SGM": 8,
+        "COLECTOMY PRTL W/RMVL TERMINAL ILEUM & ILEOCOLOS": 9,
+        "COLECTOMY PRTL W/RMVL TERMINAL ILEUM&ILEOCOLOST": 9,
+        "LAPS COLECTOMY PRTL W/RMVL TERMINAL ILEUM": 9,
+        "COLECTOMY PRTL W/RMVL TERMINAL ILEUM & ILEOCOLOST": 9,
+        "COLECTOMY PRTL W/SKIN LEVEL CECOST/COLOSTOMY": 10
+    },
+    "approach": {
+        "MIS": [
+            "Laparoscopic",
+            "Endoscopic w/ unplanned conversion to open",
+            "Hybrid",
+            "Hybrid w/ open assist",
+            "Laparoscopic Hand Assisted",
+            "Laparoscopic w/ open assist",
+            "Laparoscopic w/ unplanned conversion to open",
+            "Laparoscopic w/ unplanned conversion to Open",
+            "Other MIS approach",
+            "Robotic",
+            "Robotic w/ open assist",
+            "Robotic w/ unplanned conversion to open",
+            "SILS",
+            "SILS w/ open assist",
+            "SILS w/ unplanned conversion to open",
+            "Hybrid w/ unplanned conversion to open",
+            "Endoscopic w/ open assist",
+            "Other MIS approach w/ open assist",
+            "Endoscopic",
+            "NOTES",
+            "NOTES w/ open assist",
+            "Other MIS approach w/ unplanned conversion to open",
+            "NOTES w/ unplanned conversion to open"
+        ],
+        "open": [
+            "Open",
+            "Open (planned)"
+        ],
+        "other": [
+            "Other"
+        ]
     }
 }
