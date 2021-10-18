@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import json
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
 
 def set_nulls(data):
@@ -9,8 +10,9 @@ def set_nulls(data):
 
    @return dataframe with -99 replaced with NaN
     """
-    data.replace(to_replace=-99, value=np.nan)
-
+    data.replace(to_replace=-99, value=np.nan, inplace=True)
+    data.replace(to_replace=-99.0, value=np.nan, inplace=True)
+    data.replace(to_replace='-99', value=np.nan, inplace=True)
     return data
 
 
@@ -43,8 +45,29 @@ def replace_col_values(df, column, replace_dict, nan_vals=[], new_name=None):
     for val in nan_vals:
         df[column].replace(val, np.nan, inplace=True)
     if new_name is not None:
-        df.rename(columns={column: new_name})
+        df.rename(columns={column: new_name}, inplace=True)
     return df
+
+
+def le_ohe(data, features):
+    le = LabelEncoder()
+    encodings = {}
+    for c in features:
+        data[c] = le.fit_transform(data[c].astype(str))
+        encodings[c] = dict(zip(le.classes_, le.transform(le.classes_)))
+
+    with open('encodings.txt', 'w') as mappings:
+        for key, value in encodings.items():
+            mappings.write('%s:%s\n' % (key, value))
+
+    ohe = OneHotEncoder(drop='first')
+    ohe.fit(data[features])
+    ohe_labels = ohe.transform(data[features]).toarray()
+    df_cat = pd.DataFrame(ohe_labels, columns=ohe.get_feature_names(features))
+
+    data.drop(features, axis=1, inplace=True)
+    clean_data = pd.concat([data, df_cat], axis=1)
+    return clean_data
 
 
 def load_and_clean_data():
@@ -56,7 +79,7 @@ def load_and_clean_data():
     f = open('../data/data_cleaning.json', )
     clean_dict = json.load(f)
     df = pd.read_csv("../data/monet_output.csv")
-    data.drop(['Unnamed: 0', 'X'], axis=1, inplace=True)
+    df.drop(['Unnamed: 0', 'X'], axis=1, inplace=True)
 
     # Deal with null values: replace -99s with NaN and fill NaN for certain columns where imputation is possible.
     df['COL_APPROACH'].fillna("other", inplace=True)
@@ -88,15 +111,17 @@ def load_and_clean_data():
     replace = df.BLEEDDIS.iloc[idx]
     df.BLEEDIS.iloc[idx] = replace  # Deal with split column BLEEDIS AND BLEEDDIS
 
-    # Drop unneeded columns (DO THIS AFTER CREATING NEW COLUMNS AS DROP LIST MAY INCLUDE COLUMNS NEEDED)
-    cols_to_drop = clean_dict['cols_to_drop']
-    df.drop(columns=cols_to_drop, inplace=True)
-
     # Make sure that any relevant event occurs before readmission.
     ensure_dict = clean_dict['ensure_before_readmission']
     for binary_col in ensure_dict.keys():
-        df = ensure_before_readmission(df, ensure_dict[binary_col]['day_col'], binary_col,
-                                             ensure_dict[binary_col]['cols_to_drop'])
+        df = ensure_before_readmission(df,
+                                       ensure_dict[binary_col]['day_col'],
+                                       binary_col,
+                                       ensure_dict[binary_col]['cols_to_drop'])
+
+    # Drop unneeded columns (DO THIS AFTER CREATING NEW COLUMNS AS DROP LIST MAY INCLUDE COLUMNS NEEDED)
+    cols_to_drop = clean_dict['cols_to_drop']
+    df.drop(columns=cols_to_drop, inplace=True)
 
     # Replace and rename columns for simplicity/interpretability/ML processing
     replace_dict = clean_dict['replace_col_vals']
@@ -104,11 +129,18 @@ def load_and_clean_data():
         df = replace_col_values(df, col, **replace_dict[col])
 
     # Remove rows with null values in specific columns
-    df.dropna(subset=['AGE', 'female'], inplace=True)
+    nulls = [col for col in df.columns if (df[col].isnull().sum() != 0)]
+    nulls_le30k = [c for c in nulls if df[c].isnull().sum() <= 30000]  # Find all cols w <30k blank rows.
+    df.dropna(subset=['AGE', 'OPTIME', 'female'] + nulls_le30k, inplace=True)
 
     # Reset index before OHE
     df.reset_index(inplace=True, drop=True)
 
+    # Apply one hot encoding to categorical variables
+    cat_feat = [col for col in df.columns if (df[col].dtype == 'O') or (df[col].isnull().sum() != 0)]
+    df = le_ohe(df, cat_feat)
+
+    # Set -99 to NaN DO AFTER OHE
     df = set_nulls(df)
 
     return df
@@ -116,4 +148,4 @@ def load_and_clean_data():
 
 if __name__ == "__main__":
     data = load_and_clean_data()
-    print(data)
+    print(data.shape)
