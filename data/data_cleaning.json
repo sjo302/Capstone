@@ -168,7 +168,20 @@
         "PODIAG_OTHER",
         "PODIAG_OTHER10",
         "COL_STERIOD",
-        "COL_STEROID_UNK"
+        "COL_STEROID_UNK",
+        "ANETIME",
+        "SURGANE",
+        "ANESURG",
+        "DPATRM",
+        "REOPORICD91",
+        "RETORPODAYS",
+        "COL_MECH_BOWEL_PREP_UNK",
+        "COL_ORAL_ANTIBIOTIC_UNK",
+        "COL_CHEMO_UNK",
+        "HDISDT",
+        "PRPTT",
+        "PRPT",
+        "PRINR"
     ],
     "ensure_before_readmission": {
         "SUPINFEC": {
