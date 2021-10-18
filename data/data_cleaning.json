@@ -186,7 +186,8 @@
         "WEIGHT",
         "READMPODAYS1",
         "CASEID",
-        "BLEEDDIS"
+        "BLEEDDIS",
+        "PRALBUM", "PRBILI", "PRSGOT", "PRALKPH"
     ],
     "ensure_before_readmission": {
         "SUPINFEC": {
@@ -376,5 +377,18 @@
                 "COLECTOMY PRTL W/SKIN LEVEL CECOST/COLOSTOMY": 10
             }
         }
-    }
+    },
+    "dropna_cols": [
+        "PRSODM",
+        "PRBUN",
+        "PRCREAT",
+        "PRWBC",
+        "PRHCT",
+        "PRPLATE",
+        "TOTHLOS",
+        "HTOODAY",
+        "DOPTODIS",
+        "OPTIME",
+        "AGE"
+    ]
 }
