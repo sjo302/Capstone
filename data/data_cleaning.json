@@ -181,7 +181,12 @@
         "HDISDT",
         "PRPTT",
         "PRPT",
-        "PRINR"
+        "PRINR",
+        "HEIGHT",
+        "WEIGHT",
+        "READMPODAYS1",
+        "CASEID",
+        "BLEEDDIS"
     ],
     "ensure_before_readmission": {
         "SUPINFEC": {
@@ -279,29 +284,6 @@
             ]
         }
     },
-    "principle_operation": {
-        "COLCT TOT ABDL W/O PRCTECT W/CONTINENT ILEOST": 1,
-        "COLCT TOT ABDL W/O PRCTECT W/ILEOST/ILEOPXTS": 2,
-        "LAPS COLECTOMY TOT W/O PRCTECT W/ILEOST/ILEOPXTS": 2,
-        "COLECTOMY PARTIAL W/ANASTOMOSIS": 3,
-        "LAPAROSCOPY COLECTOMY PARTIAL W/ANASTOMOSIS": 3,
-        "COLECTOMY PRTL ABDOMINAL & TRANSANAL APPROACH": 4,
-        "COLECTOMY PRTL ABDOMINAL & TRANSANAL APPR": 4,
-        "'COLECTOMY PRTL W/COLOPROCTOSTOMY": 5,
-        "LAPS COLECTOMY PRTL W/COLOPXTSTMY LW ANAST": 5,
-        "COLECTOMY PRTL W/COLOPROCTOSTOMY & COLOSTOMY": 6,
-        "LAPS COLECTMY PRTL W/COLOPXTSTMY LW ANAST W/CLST": 6,
-        "COLECTOMY PRTL W/COLOST/ILEOST & MUCOFISTULA": 7,
-        "COLECTOMY PRTL W/END COLOSTOMY & CLSR DSTL SGMT": 8,
-        "COLECTOMY PRTL W/END COLOSTOMY&CLSR DSTL SGMT": 8,
-        "LAPS COLECTOMY PRTL W/END CLST & CLSR DSTL SGM": 8,
-        "LAPS COLECTOMY PRTL W/END CLST&CLSR DSTL SGM": 8,
-        "COLECTOMY PRTL W/RMVL TERMINAL ILEUM & ILEOCOLOS": 9,
-        "COLECTOMY PRTL W/RMVL TERMINAL ILEUM&ILEOCOLOST": 9,
-        "LAPS COLECTOMY PRTL W/RMVL TERMINAL ILEUM": 9,
-        "COLECTOMY PRTL W/RMVL TERMINAL ILEUM & ILEOCOLOST": 9,
-        "COLECTOMY PRTL W/SKIN LEVEL CECOST/COLOSTOMY": 10
-    },
     "approach": {
         "MIS": [
             "Laparoscopic",
@@ -335,5 +317,64 @@
         "other": [
             "Other"
         ]
+    },
+    "replace_col_vals": {
+        "SEX": {
+            "replace_dict": {
+                "male": 0,
+                "female": 1
+            },
+            "nan_vals": [
+                "non-bi"
+            ],
+            "new_name": "female"
+        },
+        "INOUT": {
+            "replace_dict": {
+                "Inpatient": 1,
+                "Outpatient": 0
+            },
+            "new_name": "inpatient"
+        },
+        "insulin": {
+            "replace_dict": {
+                "NON-INSULIN": 0,
+                "NO": 0,
+                "INSULIN": 1
+            }
+        },
+        "DIABETES": {
+            "replace_dict": {
+                "NON-INSULIN": 0,
+                "NO": 0,
+                "INSULIN": 1
+            },
+            "new_name": "diabetes"
+        },
+        "PRNCPTX": {
+            "replace_dict": {
+                "COLCT TOT ABDL W/O PRCTECT W/CONTINENT ILEOST": 1,
+                "COLCT TOT ABDL W/O PRCTECT W/ILEOST/ILEOPXTS": 2,
+                "LAPS COLECTOMY TOT W/O PRCTECT W/ILEOST/ILEOPXTS": 2,
+                "COLECTOMY PARTIAL W/ANASTOMOSIS": 3,
+                "LAPAROSCOPY COLECTOMY PARTIAL W/ANASTOMOSIS": 3,
+                "COLECTOMY PRTL ABDOMINAL & TRANSANAL APPROACH": 4,
+                "COLECTOMY PRTL ABDOMINAL & TRANSANAL APPR": 4,
+                "'COLECTOMY PRTL W/COLOPROCTOSTOMY": 5,
+                "LAPS COLECTOMY PRTL W/COLOPXTSTMY LW ANAST": 5,
+                "COLECTOMY PRTL W/COLOPROCTOSTOMY & COLOSTOMY": 6,
+                "LAPS COLECTMY PRTL W/COLOPXTSTMY LW ANAST W/CLST": 6,
+                "COLECTOMY PRTL W/COLOST/ILEOST & MUCOFISTULA": 7,
+                "COLECTOMY PRTL W/END COLOSTOMY & CLSR DSTL SGMT": 8,
+                "COLECTOMY PRTL W/END COLOSTOMY&CLSR DSTL SGMT": 8,
+                "LAPS COLECTOMY PRTL W/END CLST & CLSR DSTL SGM": 8,
+                "LAPS COLECTOMY PRTL W/END CLST&CLSR DSTL SGM": 8,
+                "COLECTOMY PRTL W/RMVL TERMINAL ILEUM & ILEOCOLOS": 9,
+                "COLECTOMY PRTL W/RMVL TERMINAL ILEUM&ILEOCOLOST": 9,
+                "LAPS COLECTOMY PRTL W/RMVL TERMINAL ILEUM": 9,
+                "COLECTOMY PRTL W/RMVL TERMINAL ILEUM & ILEOCOLOST": 9,
+                "COLECTOMY PRTL W/SKIN LEVEL CECOST/COLOSTOMY": 10
+            }
+        }
     }
 }
