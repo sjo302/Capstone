@@ -187,7 +187,8 @@
         "READMPODAYS1",
         "CASEID",
         "BLEEDDIS",
-        "PRALBUM", "PRBILI", "PRSGOT", "PRALKPH"
+        "PRALBUM", "PRBILI", "PRSGOT", "PRALKPH",
+        "RACE_NEW", "ETHNICITY_HISPANIC"
     ],
     "ensure_before_readmission": {
         "SUPINFEC": {
