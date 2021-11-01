@@ -172,6 +172,7 @@ def load_and_clean_data():
                                        binary_col,
                                        ensure_dict[binary_col]['cols_to_drop'])
 
+
     # Drop unneeded columns (DO THIS AFTER CREATING NEW COLUMNS AS DROP LIST MAY INCLUDE COLUMNS NEEDED)
     cols_to_drop = clean_dict['cols_to_drop']
     df.drop(columns=cols_to_drop, inplace=True)
