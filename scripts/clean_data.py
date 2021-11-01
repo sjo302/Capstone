@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.model_selection import train_test_split
 
 
 # ===============
@@ -172,7 +173,6 @@ def load_and_clean_data():
                                        binary_col,
                                        ensure_dict[binary_col]['cols_to_drop'])
 
-
     # Drop unneeded columns (DO THIS AFTER CREATING NEW COLUMNS AS DROP LIST MAY INCLUDE COLUMNS NEEDED)
     cols_to_drop = clean_dict['cols_to_drop']
     df.drop(columns=cols_to_drop, inplace=True)
@@ -197,7 +197,13 @@ def load_and_clean_data():
     dropna_cols = clean_dict['dropna_cols']
     df.dropna(axis=0, subset=dropna_cols, inplace=True)
 
-    return df
+    X = df.drop('target', axis=1)
+    y = df['target']
+
+    # 70 20 10 split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.1, random_state=42)
+
+    return X_train, X_test, y_train, y_test
 
 
 # ===============
