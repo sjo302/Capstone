@@ -212,5 +212,8 @@ def load_and_clean_data():
 
 if __name__ == "__main__":
     # If executing from this script directly, run and print shape of cleaned DataFrame for debugging
-    data = load_and_clean_data()
-    print(data.shape)
+    X_train, X_test, y_train, y_test = load_and_clean_data()
+    print(X_train.shape)
+    print(X_test.shape)
+    print(y_train.shape)
+    print(y_test.shape)
