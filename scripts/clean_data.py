@@ -155,11 +155,105 @@ def load_and_clean_data():
     df['target'] = [1 if x > 0 else 0 for x in df[unplanned].sum(axis=1)]
 
     # Process other procedures and concurrent procedures (subject to change)
+    # Count number of other/concurrent procs
     othercpt = [c for c in df if "OTHERCPT" in c]
     df['num_other_procs'] = df[othercpt].count(axis=1)
     concurrcpt = [c for c in df if "CONCURR" in c]
     df['num_concurr_procs'] = df[concurrcpt].count(axis=1)
 
+    # Binarize relevant groups within other/concurrent procs
+    # Get procedure mappings and clean
+    proc = pd.concat([df.filter(like = "OTHERPROC"), df.filter(like = "CONCURR")], axis=1).copy()
+
+    proc_maps = pd.read_csv('../data/procedure_maps.csv')
+    proc_maps = proc_maps[proc_maps.Category.isna()==False]
+    proc_maps["Procedure"] = proc_maps.Procedure.str.upper()
+    proc_maps.drop(columns="prop_patients", inplace=True)
+    proc_maps.rename(columns={"CPT Code":"cpt_code", "Category":"category", "Procedure":"procedure"}, inplace=True) 
+    proc_maps["category"] = np.where(proc_maps.category == "UROGENITAL, OBSTETRY",
+         "UROGENITAL", proc_maps.category)
+    proc_maps["category"] = np.where(proc_maps.category == "ENDOCRINE, NERVOUS, EYE, OCULAR ADNEXA,AUDITORY",
+             "ENDOCRINE", proc_maps.category)
+    proc_maps["category"] = np.where(proc_maps.category == "RESP, CV, HEMIC,  LYMPH",
+             "RESP", proc_maps.category)
+    proc_maps["category"] = np.where(proc_maps.category == "MEDICINE EVALUATION AND MANAGEMENT",
+             "MED_EVAL", proc_maps.category) 
+
+    # Binarize procedure groups
+    proc_cols = list(proc.columns.values)
+    cat_names = []
+    code_names = []
+    
+    for i in range(len(proc_cols)):
+        proc = pd.merge(proc, proc_maps, how="left", left_on=proc_cols[i], right_on="procedure")
+        cat_names.append("cat" + str(i+1))
+        proc[cat_names[i]] = proc.category
+        code_names.append("code" + str(i+1))
+        proc[code_names[i]] = proc.cpt_code
+        proc.drop(columns=["cpt_code", "category", "procedure"], inplace=True)
+    
+    proc["cat_list"] = [set([x for x in l if pd.isnull(x)==False]) for l in proc[cat_names].values.tolist()]
+    proc["code_list"] = [set([x for x in l if pd.isnull(x)==False]) for l in proc[code_names].values.tolist()]
+    
+    proc.drop(columns = cat_names + code_names, inplace=True)
+    
+    proc_groups = list(proc_maps.category.unique())
+    
+    for cat in proc_maps.category.unique():
+        temp_list = []
+        for i in range(len(proc)):
+            if cat in proc.cat_list[i]:
+                temp_list.append(1)
+            else:
+                temp_list.append(0)
+        proc[cat] = temp_list
+    
+    dig_groups = {}
+    dig_groups["ORO_ESOPH"] = {"bot":42955, "top":43499}
+    dig_groups["STOMACH"] = {"bot":43500, "top":43999}
+    dig_groups["SM_INT"] = {"bot":44000, "top":44799}
+    dig_groups["MECKEL"] = {"bot":44800, "top":44899}
+    dig_groups["PROCTOLOGY"] = {"bot":44900, "top":46999}
+    dig_groups["HEP_PAN_BIL"] = {"bot":47000, "top":48999}
+    dig_groups["PERITONEUM"] = {"bot":48999, "top":49999}
+    
+    for grp in dig_groups.keys():
+        temp_list = []
+        for i in range(len(proc)):
+            temp_val = 0
+            for codes in proc.code_list[i]:
+                if (codes >= dig_groups[grp]["bot"]) & (codes <= dig_groups[grp]["top"]):
+                    temp_val+=1
+            if temp_val > 0:
+                temp_list.append(1)
+            else:
+                temp_list.append(0)
+    
+        proc[grp] = temp_list
+    
+    # Append prodedure groups to full data
+    final_procs = proc[list(proc_maps.category.unique()) + list(dig_groups.keys())]
+    df = pd.concat([df, final_procs], axis=1)
+
+
+    # Binarize relevant groups within PODIAG10
+    podiag_maps = pd.read_csv('../data/podiag_maps.csv', usecols=["Prop", "Parent Code"])
+    podiag_maps.rename(columns={"Prop":"prop", "Parent Code":"PODIAG10"}, inplace=True)
+    
+    podiag_maps = podiag_maps[podiag_maps.prop >= 0.001]
+    
+    podiag = df[["PODIAG10", "PODIAGTX10"]].copy()
+    podiag.PODIAG10.replace('\.[0-9]+', '', regex=True, inplace=True)
+    
+    for po_grp in podiag_maps.PODIAG10:
+        podiag[po_grp] = np.where(podiag.PODIAG10 == po_grp, 1, 0)
+    
+    # Append PODIAG groups to full data
+    final_podiag = podiag.drop(columns=["PODIAG10", "PODIAGTX10"])
+    df = pd.concat([df, final_podiag], axis=1)
+
+
+    # Misc (diabetes and bleedis)
     df['insulin'] = df.DIABETES  # Duplicate diabetes column for one-hot encoding
     idx = np.where(df.BLEEDDIS.isnull() is False)[0]
     replace = df.BLEEDDIS.iloc[idx]
