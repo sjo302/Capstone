@@ -58,10 +58,15 @@ def ensure_before_readmission(df, day_col, binary_col, cols_to_drop=[]):
     @param cols_to_drop: Additional related columns not needed for analysis (optional)
     @return: DataFrame with all events occurring before readmission
     """
-    # Create a variable to check if readmission is before the particular column by setting null values extremely high
-    days_to_readmission = df['READMPODAYS1'].fillna(999)
+
+    # Specifically for death, ensure that it occurs after readmission
+    if binary_col == "DOPERTOD":
+        days_to_readmission = df['READMPODAYS1'].replace(-99, -1)
+        df = df[df[day_col] - days_to_readmission <= 0]
     # If an event occurs after readmission, set binary value to 0
-    df.loc[(days_to_readmission - df[day_col]) <= 0, binary_col] = 0
+    else:
+        days_to_readmission = df['READMPODAYS1'].replace(-99, 999)
+        df.loc[(days_to_readmission - df[day_col]) <= 0, binary_col] = 0
     # Create list of columns to drop, combining provided list with now unneeded date column
     dropcols = cols_to_drop + [day_col]
     df.drop(columns=dropcols, inplace=True)
@@ -163,13 +168,13 @@ def load_and_clean_data():
 
     # Binarize relevant groups within other/concurrent procs
     # Get procedure mappings and clean
-    proc = pd.concat([df.filter(like = "OTHERPROC"), df.filter(like = "CONCURR")], axis=1).copy()
+    proc = pd.concat([df.filter(like="OTHERPROC"), df.filter(like = "CONCURR")], axis=1).copy()
 
     proc_maps = pd.read_csv('../data/procedure_maps.csv')
     proc_maps = proc_maps[proc_maps.Category.isna()==False]
     proc_maps["Procedure"] = proc_maps.Procedure.str.upper()
     proc_maps.drop(columns="prop_patients", inplace=True)
-    proc_maps.rename(columns={"CPT Code":"cpt_code", "Category":"category", "Procedure":"procedure"}, inplace=True) 
+    proc_maps.rename(columns={"CPT Code":"cpt_code", "Category":"category", "Procedure":"procedure"}, inplace=True)
     proc_maps["category"] = np.where(proc_maps.category == "UROGENITAL, OBSTETRY",
          "UROGENITAL", proc_maps.category)
     proc_maps["category"] = np.where(proc_maps.category == "ENDOCRINE, NERVOUS, EYE, OCULAR ADNEXA,AUDITORY",
@@ -177,13 +182,13 @@ def load_and_clean_data():
     proc_maps["category"] = np.where(proc_maps.category == "RESP, CV, HEMIC,  LYMPH",
              "RESP", proc_maps.category)
     proc_maps["category"] = np.where(proc_maps.category == "MEDICINE EVALUATION AND MANAGEMENT",
-             "MED_EVAL", proc_maps.category) 
+             "MED_EVAL", proc_maps.category)
 
     # Binarize procedure groups
     proc_cols = list(proc.columns.values)
     cat_names = []
     code_names = []
-    
+
     for i in range(len(proc_cols)):
         proc = pd.merge(proc, proc_maps, how="left", left_on=proc_cols[i], right_on="procedure")
         cat_names.append("cat" + str(i+1))
@@ -191,14 +196,14 @@ def load_and_clean_data():
         code_names.append("code" + str(i+1))
         proc[code_names[i]] = proc.cpt_code
         proc.drop(columns=["cpt_code", "category", "procedure"], inplace=True)
-    
+
     proc["cat_list"] = [set([x for x in l if pd.isnull(x)==False]) for l in proc[cat_names].values.tolist()]
     proc["code_list"] = [set([x for x in l if pd.isnull(x)==False]) for l in proc[code_names].values.tolist()]
-    
-    proc.drop(columns = cat_names + code_names, inplace=True)
-    
+
+    proc.drop(columns=cat_names + code_names, inplace=True)
+
     proc_groups = list(proc_maps.category.unique())
-    
+
     for cat in proc_maps.category.unique():
         temp_list = []
         for i in range(len(proc)):
@@ -207,7 +212,7 @@ def load_and_clean_data():
             else:
                 temp_list.append(0)
         proc[cat] = temp_list
-    
+
     dig_groups = {}
     dig_groups["ORO_ESOPH"] = {"bot":42955, "top":43499}
     dig_groups["STOMACH"] = {"bot":43500, "top":43999}
@@ -216,7 +221,7 @@ def load_and_clean_data():
     dig_groups["PROCTOLOGY"] = {"bot":44900, "top":46999}
     dig_groups["HEP_PAN_BIL"] = {"bot":47000, "top":48999}
     dig_groups["PERITONEUM"] = {"bot":48999, "top":49999}
-    
+
     for grp in dig_groups.keys():
         temp_list = []
         for i in range(len(proc)):
@@ -228,10 +233,10 @@ def load_and_clean_data():
                 temp_list.append(1)
             else:
                 temp_list.append(0)
-    
+
         proc[grp] = temp_list
-    
-    # Append prodedure groups to full data
+
+    # Append procedure groups to full data
     final_procs = proc[list(proc_maps.category.unique()) + list(dig_groups.keys())]
     df = pd.concat([df, final_procs], axis=1)
 
@@ -239,15 +244,15 @@ def load_and_clean_data():
     # Binarize relevant groups within PODIAG10
     podiag_maps = pd.read_csv('../data/podiag_maps.csv', usecols=["Prop", "Parent Code"])
     podiag_maps.rename(columns={"Prop":"prop", "Parent Code":"PODIAG10"}, inplace=True)
-    
+
     podiag_maps = podiag_maps[podiag_maps.prop >= 0.001]
-    
+
     podiag = df[["PODIAG10", "PODIAGTX10"]].copy()
     podiag.PODIAG10.replace('\.[0-9]+', '', regex=True, inplace=True)
-    
+
     for po_grp in podiag_maps.PODIAG10:
         podiag[po_grp] = np.where(podiag.PODIAG10 == po_grp, 1, 0)
-    
+
     # Append PODIAG groups to full data
     final_podiag = podiag.drop(columns=["PODIAG10", "PODIAGTX10"])
     df = pd.concat([df, final_podiag], axis=1)
