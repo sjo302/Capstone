@@ -58,15 +58,9 @@ def ensure_before_readmission(df, day_col, binary_col, cols_to_drop=[]):
     @param cols_to_drop: Additional related columns not needed for analysis (optional)
     @return: DataFrame with all events occurring before readmission
     """
-
-    # Specifically for death, ensure that it occurs after readmission
-    if binary_col == "DOPERTOD":
-        days_to_readmission = df['READMPODAYS1'].replace(-99, -1)
-        df = df[df[day_col] - days_to_readmission <= 0]
-    # If an event occurs after readmission, set binary value to 0
-    else:
-        days_to_readmission = df['READMPODAYS1'].replace(-99, 999)
-        df.loc[(days_to_readmission - df[day_col]) <= 0, binary_col] = 0
+    days_to_readmission = df['READMPODAYS1'].replace(-99, 999)
+    df.loc[(days_to_readmission - df[day_col]) <= 0, binary_col] = 0
+    
     # Create list of columns to drop, combining provided list with now unneeded date column
     dropcols = cols_to_drop + [day_col]
     df.drop(columns=dropcols, inplace=True)
@@ -138,9 +132,10 @@ def load_and_clean_data():
     f = open('../data/data_cleaning.json', )
     clean_dict = json.load(f)
     df = pd.read_csv("../data/monet_output.csv")
-    df.drop(['Unnamed: 0', 'X'], axis=1, inplace=True)
+    df.drop(['Unnamed: 0'], axis=1, inplace=True)
 
     # Deal with null values: replace -99s with NaN and fill NaN for certain columns where imputation is possible
+    df = set_nulls(df)
     df['COL_APPROACH'].fillna("other", inplace=True)
     df['REOPERATION2'].fillna(0, inplace=True)
 
@@ -260,9 +255,6 @@ def load_and_clean_data():
 
     # Misc (diabetes and bleedis)
     df['insulin'] = df.DIABETES  # Duplicate diabetes column for one-hot encoding
-    idx = np.where(df.BLEEDDIS.isnull() is False)[0]
-    replace = df.BLEEDDIS.iloc[idx]
-    df.BLEEDIS.iloc[idx] = replace  # Deal with split column BLEEDIS AND BLEEDDIS
 
     # Make sure that any relevant event occurs before readmission
     ensure_dict = clean_dict['ensure_before_readmission']
@@ -273,7 +265,8 @@ def load_and_clean_data():
                                        ensure_dict[binary_col]['cols_to_drop'])
 
     # Drop unneeded columns (DO THIS AFTER CREATING NEW COLUMNS AS DROP LIST MAY INCLUDE COLUMNS NEEDED)
-    cols_to_drop = clean_dict['cols_to_drop']
+    cols_to_drop = set(clean_dict['cols_to_drop'])
+    cols_to_drop = cols_to_drop.intersection(set(df.columns))
     df.drop(columns=cols_to_drop, inplace=True)
 
     # Replace and rename columns for simplicity/interpretability/ML processing
@@ -284,17 +277,17 @@ def load_and_clean_data():
     # Drop NaN values for age and sex and reset index before OHE before one-hot encoding
     df.dropna(subset=['AGE', 'female'], inplace=True)
     df.reset_index(inplace=True, drop=True)
-
+    
+    # Remove rows with null values in specific columns
+    dropna_cols = set(clean_dict['dropna_cols'])
+    dropna_cols = dropna_cols.intersection(set(df.columns))
+    df.dropna(axis=0, subset=dropna_cols, inplace=True)
+    
     # Apply one hot encoding to categorical variables
     cat_feat = [col for col in df.columns if (df[col].dtype == 'O') or (df[col].isnull().sum() != 0)]
+    
+    #OHE
     df = le_ohe(df, cat_feat)
-
-    # Set -99 to NaN (MAKE SURE THIS IS AFTER OHE)
-    df = set_nulls(df)
-
-    # Remove rows with null values in specific columns
-    dropna_cols = clean_dict['dropna_cols']
-    df.dropna(axis=0, subset=dropna_cols, inplace=True)
 
     X = df.drop('target', axis=1)
     y = df['target']
