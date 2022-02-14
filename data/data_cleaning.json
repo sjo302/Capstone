@@ -283,10 +283,6 @@
                 "REOPOR2ICD91",
                 "REOPOR2ICD101"
             ]
-        },
-        "DOPERTOD": {
-            "day_col": "DOPERTOD",
-            "cols_to_drop": []
         }
     },
     "approach": {
@@ -393,6 +389,7 @@
         "HTOODAY",
         "DOPTODIS",
         "OPTIME",
-        "AGE"
+        "AGE",
+        "bmi"
     ]
 }
