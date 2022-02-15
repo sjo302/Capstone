@@ -112,9 +112,11 @@ def le_ohe(data, features):
     ohe.fit(data[features])
     ohe_labels = ohe.transform(data[features]).toarray()
     df_cat = pd.DataFrame(ohe_labels, columns=ohe.get_feature_names(features))
+    df_cat.reset_index(drop=True, inplace=True)
 
     # Drop old features, concatenate data with new encoded features
     data.drop(features, axis=1, inplace=True)
+    data.reset_index(drop=True, inplace=True)
     clean_data = pd.concat([data, df_cat], axis=1)
     return clean_data
 
@@ -277,7 +279,7 @@ def load_and_clean_data():
     # Drop NaN values for age and sex and reset index before OHE before one-hot encoding
     df.dropna(subset=['AGE', 'female'], inplace=True)
     df.reset_index(inplace=True, drop=True)
-    
+
     # Remove rows with null values in specific columns
     dropna_cols = set(clean_dict['dropna_cols'])
     dropna_cols = dropna_cols.intersection(set(df.columns))
@@ -285,7 +287,7 @@ def load_and_clean_data():
     
     # Apply one hot encoding to categorical variables
     cat_feat = [col for col in df.columns if (df[col].dtype == 'O') or (df[col].isnull().sum() != 0)]
-    
+
     #OHE
     df = le_ohe(df, cat_feat)
 
