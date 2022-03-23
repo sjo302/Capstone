@@ -73,7 +73,7 @@ def replace_col_values(df, column, replace_dict, nan_vals=[], new_name=None):
     @param df: DataFrame containing data
     @param column: Column to modify
     @param replace_dict: Dictionary old, new pairs for replacement
-    @param nan_vals: Values to replace with NaN (optional)
+    @param nan_vals: Values to replace with NaN (optional
     @param new_name: New column name for interpretability (optional)
     @return: Modified DataFrame
     """
